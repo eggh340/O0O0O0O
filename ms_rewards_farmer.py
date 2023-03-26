@@ -17,6 +17,7 @@ import traceback
 import ipapi
 import requests
 from func_timeout import FunctionTimedOut, func_set_timeout
+from notifiers import get_notifier
 from random_word import RandomWords
 from selenium import webdriver
 from selenium.common.exceptions import (ElementNotInteractableException,
@@ -1650,7 +1651,7 @@ def createMessage():
     today = date.today().strftime("%d/%m/%Y")
     total_earned = 0
     total_overall = 0
-    message = f'📅 Daily report {today}\n\n'
+    message = f'ðŸ“… Daily report {today}\n\n'
     for index, value in enumerate(LOGS.items(), 1):
         redeem_message = None
         if value[1].get("Redeem goal title", None):
@@ -1660,48 +1661,48 @@ def createMessage():
             if ARGS.redeem:
                 # only run if args.redeem mate
                 if value[1]['Auto redeem']:
-                    redeem_message = f"🎁 Auto redeem: {value[1]['Auto redeem']} {redeem_title} for {redeem_price} points ({redeem_count}x)\n\n"
+                    redeem_message = f"ðŸŽ Auto redeem: {value[1]['Auto redeem']} {redeem_title} for {redeem_price} points ({redeem_count}x)\n\n"
             elif redeem_count > 1:
-                redeem_message = f"🎁 Ready to redeem: {redeem_title} for {redeem_price} points ({redeem_count}x)\n\n"
+                redeem_message = f"ðŸŽ Ready to redeem: {redeem_title} for {redeem_price} points ({redeem_count}x)\n\n"
             else:
-                redeem_message = f"🎁 Ready to redeem: {redeem_title} for {redeem_price} points\n\n"
+                redeem_message = f"ðŸŽ Ready to redeem: {redeem_title} for {redeem_price} points\n\n"
         if value[1]['Last check'] == str(date.today()):
-            status = '✅ Farmed'
+            status = 'âœ… Farmed'
             new_points = value[1]["Today's points"]
             total_earned += new_points
             total_points = value[1]["Points"]
             total_overall += total_points
-            message += f"{index}. {value[0]}\n📝 Status: {status}\n⭐️ Earned points: {new_points}\n🏅 Total points: {total_points}\n"
+            message += f"{index}. {value[0]}\nðŸ“ Status: {status}\nâ­ï¸ Earned points: {new_points}\nðŸ… Total points: {total_points}\n"
             if redeem_message:
                 message += redeem_message
             else:
                 message += "\n"
         elif value[1]['Last check'] == 'Your account has been suspended':
-            status = '❌ Suspended'
-            message += f"{index}. {value[0]}\n📝 Status: {status}\n\n"
+            status = 'âŒ Suspended'
+            message += f"{index}. {value[0]}\nðŸ“ Status: {status}\n\n"
         elif value[1]['Last check'] == 'Your account has been locked !':
-            status = '⚠️ Locked'
-            message += f"{index}. {value[0]}\n📝 Status: {status}\n\n"
+            status = 'âš ï¸ Locked'
+            message += f"{index}. {value[0]}\nðŸ“ Status: {status}\n\n"
         elif value[1]['Last check'] == 'Unusual activity detected !':
-            status = '⚠️ Unusual activity detected'
-            message += f"{index}. {value[0]}\n📝 Status: {status}\n\n"
+            status = 'âš ï¸ Unusual activity detected'
+            message += f"{index}. {value[0]}\nðŸ“ Status: {status}\n\n"
         elif value[1]['Last check'] == 'Unknown error !':
-            status = '⛔️ Unknown error occurred'
-            message += f"{index}. {value[0]}\n📝 Status: {status}\n\n"
+            status = 'â›”ï¸ Unknown error occurred'
+            message += f"{index}. {value[0]}\nðŸ“ Status: {status}\n\n"
         else:
             status = f'Farmed on {value[1]["Last check"]}'
             new_points = value[1]["Today's points"]
             total_earned += new_points
             total_points = value[1]["Points"]
             total_overall += total_points
-            message += f"{index}. {value[0]}\n📝 Status: {status}\n⭐️ Earned points: {new_points}\n🏅 Total points: {total_points}\n"
+            message += f"{index}. {value[0]}\nðŸ“ Status: {status}\nâ­ï¸ Earned points: {new_points}\nðŸ… Total points: {total_points}\n"
             if redeem_message:
                 message += redeem_message
             else:
                 message += "\n"
-    message += f"💵 Total earned points: {total_earned} " \
+    message += f"ðŸ’µ Total earned points: {total_earned} " \
                f"(${total_earned / 1300:0.02f}) " \
-               f"(€{total_earned / 1500:0.02f}) " \
+               f"(â‚¬{total_earned / 1500:0.02f}) " \
                f"(AU${total_earned / 1350:0.02f})"
     return message
 
@@ -1733,10 +1734,10 @@ def sendToDiscord(message):
     if len(message) > 2000:
         messages = [message[i:i + 2000] for i in range(0, len(message), 2000)]
         for ms in messages:
-            content = {"username": "⭐️ Microsoft Rewards Bot ⭐️", "content": ms}
+            content = {"username": "â­ï¸ Microsoft Rewards Bot â­ï¸", "content": ms}
             response = requests.post(webhook_url, json=content)
     else:
-        content = {"username": "⭐️ Microsoft Rewards Bot ⭐️", "content": message}
+        content = {"username": "â­ï¸ Microsoft Rewards Bot â­ï¸", "content": message}
         response = requests.post(webhook_url, json=content)
     if response.status_code == 204:
         prGreen("[LOGS] Report sent to Discord.\n")
@@ -1955,12 +1956,12 @@ def prPurple(prt):
 def logo():
     """logo"""
     prRed("""
-    ███╗   ███╗███████╗    ███████╗ █████╗ ██████╗ ███╗   ███╗███████╗██████╗ 
-    ████╗ ████║██╔════╝    ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝██╔══██╗
-    ██╔████╔██║███████╗    █████╗  ███████║██████╔╝██╔████╔██║█████╗  ██████╔╝
-    ██║╚██╔╝██║╚════██║    ██╔══╝  ██╔══██║██╔══██╗██║╚██╔╝██║██╔══╝  ██╔══██╗
-    ██║ ╚═╝ ██║███████║    ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗██║  ██║
-    ╚═╝     ╚═╝╚══════╝    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝""")
+    â–ˆâ–ˆâ–ˆâ•—   â–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—    â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ•—   â–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— 
+    â–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â•â•â•    â–ˆâ–ˆâ•”â•â•â•â•â•â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â•â•â•â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—
+    â–ˆâ–ˆâ•”â–ˆâ–ˆâ–ˆâ–ˆâ•”â–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—    â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ•”â–ˆâ–ˆâ–ˆâ–ˆâ•”â–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•
+    â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ•‘â•šâ•â•â•â•â–ˆâ–ˆâ•‘    â–ˆâ–ˆâ•”â•â•â•  â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â•  â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—
+    â–ˆâ–ˆâ•‘ â•šâ•â• â–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘    â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘ â•šâ•â• â–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘
+    â•šâ•â•     â•šâ•â•â•šâ•â•â•â•â•â•â•    â•šâ•â•     â•šâ•â•  â•šâ•â•â•šâ•â•  â•šâ•â•â•šâ•â•     â•šâ•â•â•šâ•â•â•â•â•â•â•â•šâ•â•  â•šâ•â•""")
     prPurple("            by @Charlesbel upgraded by @Farshadz1997        version 2.1\n")
 
 
