@@ -11,3 +11,4 @@ pyyaml
 webdriver-manager
 packaging
 discord-webhook
+notifiers
