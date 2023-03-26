@@ -17,7 +17,6 @@ import traceback
 import ipapi
 import requests
 from func_timeout import FunctionTimedOut, func_set_timeout
-from notifiers import get_notifier
 from random_word import RandomWords
 from selenium import webdriver
 from selenium.common.exceptions import (ElementNotInteractableException,
