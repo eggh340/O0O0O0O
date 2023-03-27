@@ -22,4 +22,4 @@ jobs:
       - name: Step 3 - Getting dependencies
         run: pip install -r requirements.txt
       - name: Step 4 - Test run
-        run: python ms_rewards_farmer.py --headless --privacy --accounts ${{ secrets.test1 }} --wfd ${{ github.workflow }} ${{ github.run_number }} --d ${{ secrets.webhook }}
+        run: python hello_world.py --headless --privacy --accounts ${{ secrets.test1 }} --wfd ${{ github.workflow }} ${{ github.run_number }} --d ${{ secrets.webhook }}
